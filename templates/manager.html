@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Manager dashboard - MaintainIQ{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Property manager dashboard</h1>
+    <p>Portfolio-wide view of requests, staff workload and service levels.</p>
+  </div>
+</div>
+
+<div class="tabs" role="tablist" aria-label="Dashboard sections">
+  <button type="button" class="tab" role="tab" id="tab-overview" aria-selected="true" aria-controls="view-overview">Overview</button>
+  <button type="button" class="tab" role="tab" id="tab-requests" aria-selected="false" aria-controls="view-requests">Requests</button>
+  <button type="button" class="tab" role="tab" id="tab-staff" aria-selected="false" aria-controls="view-staff">Staff</button>
+</div>
+
+<!-- Overview -->
+<div id="view-overview" role="tabpanel" aria-labelledby="tab-overview">
+  <div class="tiles four" id="kpis"></div>
+  <div class="grid-charts">
+    <section class="card"><h2>Requests by status</h2><div class="bars" id="chart-status"></div></section>
+    <section class="card"><h2>Requests by urgency</h2><div class="bars" id="chart-urgency"></div></section>
+    <section class="card"><h2>Requests by category</h2><div class="bars" id="chart-category"></div></section>
+    <section class="card"><h2>Avg. resolution time by urgency</h2><div class="bars" id="chart-resolution"></div></section>
+  </div>
+  <section class="card" style="margin-top:1.25rem">
+    <h2>Last 14 days</h2>
+    <div class="legend"><span><i style="background:#6366f1"></i>Submitted</span><span><i style="background:#16a34a"></i>Resolved</span></div>
+    <div id="chart-trend"></div>
+  </section>
+  <section class="card" style="margin-top:1.25rem">
+    <h2>Staff performance</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Staff</th><th>Specialty</th><th>Active</th><th>Resolved</th><th>Avg. resolution</th><th>SLA met</th><th>Overdue</th></tr></thead>
+        <tbody id="perf-body"></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<!-- Requests -->
+<div id="view-requests" role="tabpanel" aria-labelledby="tab-requests" class="hidden">
+  <section class="card">
+    <div class="card-head">
+      <div class="filters">
+        <input id="f-q" type="search" placeholder="Search title, unit, tenant, #id" aria-label="Search requests">
+        <select id="f-status" aria-label="Status">
+          <option value="">All statuses</option><option>Open</option><option>Assigned</option><option>In Progress</option><option>Resolved</option>
+        </select>
+        <select id="f-urgency" aria-label="Urgency">
+          <option value="">All urgencies</option><option>Critical</option><option>High</option><option>Medium</option><option>Low</option>
+        </select>
+        <select id="f-category" aria-label="Category">
+          <option value="">All categories</option>
+          {% for c in categories %}<option>{{ c }}</option>{% endfor %}
+        </select>
+      </div>
+      <button type="button" class="btn secondary" id="auto-assign-btn">Auto-assign waiting requests</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Issue</th><th>Unit</th><th>Urgency</th><th>Status</th><th>Assigned to</th><th>Target</th></tr></thead>
+        <tbody id="requests-body"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody>
+      </table>
+    </div>
+    <p class="help" id="requests-count"></p>
+  </section>
+</div>
+
+<!-- Staff -->
+<div id="view-staff" role="tabpanel" aria-labelledby="tab-staff" class="hidden">
+  <div class="grid-2">
+    <section class="card">
+      <h2>Add technician</h2>
+      <form id="staff-form" novalidate>
+        <div class="field"><label for="s-name">Full name</label><input id="s-name" maxlength="60" required></div>
+        <div class="field"><label for="s-email">Email</label><input id="s-email" type="email" required></div>
+        <div class="field"><label for="s-specialty">Specialty</label>
+          <select id="s-specialty" required>
+            {% for c in categories %}<option>{{ c }}</option>{% endfor %}
+          </select></div>
+        <div class="field"><label for="s-phone">Phone (optional)</label><input id="s-phone" type="tel" maxlength="20"></div>
+        <div class="field"><label for="s-password">Temporary password</label><input id="s-password" type="password" autocomplete="new-password" required>
+          <div class="help">At least 8 characters, letters and numbers.</div></div>
+        <div class="form-error" id="staff-error" role="alert"></div>
+        <button type="submit" class="btn block">Add technician</button>
+      </form>
+    </section>
+    <section class="card">
+      <h2>Technicians</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Specialty</th><th>Email</th><th>Active jobs</th><th>Workload</th></tr></thead>
+          <tbody id="staff-body"></tbody>
+        </table>
+      </div>
+      <p class="help">Workload score weights jobs by urgency (Critical 4, High 3, Medium 2, Low 1); new requests go to the lowest score with a matching specialty.</p>
+    </section>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/manager.js') }}"></script>{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}My requests - MaintainIQ{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Hello, {{ user['name'].split(' ')[0] }}</h1>
+    <p>Unit {{ user['unit'] }} &middot; report a problem and follow it until it is fixed.</p>
+  </div>
+</div>
+
+<div class="grid-2">
+  <section class="card" aria-labelledby="new-title">
+    <h2 id="new-title">New maintenance request</h2>
+    <form id="request-form" novalidate>
+      <div class="field"><label for="r-title">Short title</label>
+        <input id="r-title" maxlength="100" placeholder="e.g. Kitchen sink is leaking" required></div>
+      <div class="field"><label for="r-category">Category</label>
+        <select id="r-category" required>
+          <option value="" disabled selected>Select a category</option>
+          {% for c in categories %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
+        </select></div>
+      <div class="field"><label for="r-description">Describe the problem</label>
+        <textarea id="r-description" maxlength="1000" placeholder="What is happening, where, and since when?" required></textarea>
+        <div class="help"><span id="char-count">0</span>/1000 &middot; mention safety risks (gas smell, sparks, flooding) so we can act fast.</div></div>
+      <div id="prediction" class="prediction hidden" aria-live="polite"></div>
+      <div class="form-error" id="request-error" role="alert"></div>
+      <button class="btn block" type="submit" id="submit-btn">Submit request</button>
+    </form>
+  </section>
+
+  <section class="card" aria-labelledby="mine-title">
+    <div class="card-head">
+      <h2 id="mine-title">My requests</h2>
+      <div class="filters">
+        <label class="sr-only" for="status-filter">Filter by status</label>
+        <select id="status-filter">
+          <option value="">All statuses</option>
+          <option>Open</option><option>Assigned</option><option>In Progress</option><option>Resolved</option>
+        </select>
+      </div>
+    </div>
+    <div id="request-list" class="req-list" aria-live="polite"><div class="empty">Loading...</div></div>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/tenant.js') }}"></script>{% endblock %}

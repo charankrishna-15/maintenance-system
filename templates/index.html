@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Sign in - MaintainIQ{% endblock %}
+{% block body %}
+<div class="landing">
+  <section class="hero">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">&#127970;</span> MaintainIQ</div>
+    <h1>Maintenance requests, prioritised and resolved faster.</h1>
+    <p class="lead">A property maintenance portal for tenants, technicians and property managers.
+      Requests are scored for urgency automatically and routed to the right person.</p>
+    <ul class="features">
+      <li><span class="dot">&#9889;</span><span><strong>Urgency prediction</strong><br>A machine-learning model flags emergencies like gas leaks and flooding instantly.</span></li>
+      <li><span class="dot">&#128295;</span><span><strong>Automatic assignment</strong><br>Work goes to the best-matched technician with the lightest workload.</span></li>
+      <li><span class="dot">&#128202;</span><span><strong>Manager analytics</strong><br>Track SLA compliance, resolution times and staff performance.</span></li>
+    </ul>
+    {% if demo %}
+    <div class="demo-box">
+      <strong>Demo accounts (click to fill)</strong>
+      <button type="button" class="btn ghost sm" data-demo="tenant1@demo.com|Tenant@123">Tenant</button>
+      <button type="button" class="btn ghost sm" data-demo="plumber@demo.com|Staff@1234">Staff (Plumber)</button>
+      <button type="button" class="btn ghost sm" data-demo="manager@demo.com|Manager@123">Manager</button>
+    </div>
+    {% endif %}
+  </section>
+
+  <section class="auth-side">
+    <div class="card auth-card">
+      <div class="tabs" role="tablist" aria-label="Account">
+        <button type="button" class="tab" role="tab" id="tab-login" aria-selected="true" aria-controls="panel-login">Log in</button>
+        <button type="button" class="tab" role="tab" id="tab-register" aria-selected="false" aria-controls="panel-register">Tenant sign-up</button>
+      </div>
+
+      <form id="panel-login" role="tabpanel" aria-labelledby="tab-login" novalidate>
+        <div class="field"><label for="login-email">Email</label>
+          <input id="login-email" type="email" autocomplete="username" required></div>
+        <div class="field"><label for="login-password">Password</label>
+          <input id="login-password" type="password" autocomplete="current-password" required></div>
+        <div class="form-error" id="login-error" role="alert"></div>
+        <button class="btn block" type="submit">Log in</button>
+      </form>
+
+      <form id="panel-register" role="tabpanel" aria-labelledby="tab-register" class="hidden" novalidate>
+        <div class="field"><label for="reg-name">Full name</label>
+          <input id="reg-name" autocomplete="name" maxlength="60" required></div>
+        <div class="field"><label for="reg-email">Email</label>
+          <input id="reg-email" type="email" autocomplete="email" required></div>
+        <div class="row">
+          <div class="field"><label for="reg-unit">Unit / flat no.</label>
+            <input id="reg-unit" maxlength="20" placeholder="e.g. A-101" required></div>
+          <div class="field"><label for="reg-phone">Phone (optional)</label>
+            <input id="reg-phone" type="tel" maxlength="20" autocomplete="tel"></div>
+        </div>
+        <div class="field"><label for="reg-password">Password</label>
+          <input id="reg-password" type="password" autocomplete="new-password" required>
+          <div class="help">At least 8 characters, with letters and numbers.</div></div>
+        <div class="form-error" id="register-error" role="alert"></div>
+        <button class="btn block" type="submit">Create tenant account</button>
+        <p class="help" style="margin-top:.7rem">Technician and manager accounts are created by a property manager.</p>
+      </form>
+    </div>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/index.js') }}"></script>{% endblock %}
